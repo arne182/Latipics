@@ -41,6 +41,14 @@ import com.blazingfrog.misc.DefaultOptions;
 import com.blazingfrog.misc.Folder;
 import com.blazingfrog.misc.ImageFile;
 import com.blazingfrog.misc.Resources;
+import com.blazingfrog.misc.UserProfile;
+import com.blazingfrog.oauth.OAuthMain;
+import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.auth.oauth2.RefreshTokenRequest;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson.JacksonFactory;
 
 
 
@@ -145,7 +153,8 @@ public class MainProcess implements Runnable{
     	long picTimestamp = 0;
     	BufferedImage pic = null;
     	success = false;
-    	
+
+		  
         // establish metadata
         try {
             metadata = Sanselan.getMetadata(file);
@@ -291,7 +300,7 @@ public class MainProcess implements Runnable{
 				
                	Latitude latitude = null;
 				try {
-					latitude = new Latitude(picTimestamp, token, tokenSecret);
+					latitude = new Latitude(picTimestamp, token, tokenSecret,UserProfile.getDefault());
 				} catch (NoLatitudeInfoFoundException e) {
 	    			consoleLabel.setForeground(Color.DARK_GRAY);
 					ConsoleFile.write("WARNING", file.getPath() + " : No Latitude history found for timestamp: " + date + ". SKIPPED");
