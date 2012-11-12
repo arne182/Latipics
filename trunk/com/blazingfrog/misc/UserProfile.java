@@ -28,10 +28,25 @@ public class UserProfile {
 			return true;
 		return false;
 	}
-	
+	public static void delete(String profileName){
+		file_path = ROOT_PATH + profileName + "$prof.xml";
+		new File(file_path).delete();
+	}
 	public static void add(String profileName, String token, String tokenSecret) throws ProfileAlreadyExistsException, IOException{
 		if (exists(profileName))
 			throw new ProfileAlreadyExistsException();
+		properties = new Properties();
+		propFile_o = new FileOutputStream(ROOT_PATH + profileName + "$prof.xml");
+		properties.setProperty("AccessToken", token);
+		properties.setProperty("TokenSecret", tokenSecret);
+		properties.storeToXML(propFile_o, "LatiPics Profiles", "UTF-8");
+		
+		if (listProfiles().size() == 1)
+			DefaultOptions.setDefaultProfileName(profileName);
+	}
+	public static void overwrite(String profileName, String token, String tokenSecret) throws ProfileAlreadyExistsException, IOException{
+		if (exists(profileName))
+			delete(profileName);
 		properties = new Properties();
 		propFile_o = new FileOutputStream(ROOT_PATH + profileName + "$prof.xml");
 		properties.setProperty("AccessToken", token);
@@ -87,21 +102,21 @@ public class UserProfile {
 	    return list;
 	}
 	
-//	
-//	public static void setDefault(String profileName) throws IOException {
-//		File defProfFile = new File(ROOT_PATH + "defaultProfile.xml");
-//		if (!defProfFile.exists())
-//		{
-//			//defProfFile.delete();
-//			properties = new Properties();
-//		}
-//		else{
-//			read();
-//		}
-//		propFile_o = new FileOutputStream(defProfFile);
-//		properties.setProperty("Profile", profileName);
-//		properties.storeToXML(propFile_o, "LatiPics Default Profile", "UTF-8");
-//	}
+	
+	public static void setDefault(String profileName) throws IOException {
+		File defProfFile = new File(ROOT_PATH + "defaultProfile.xml");
+		if (!defProfFile.exists())
+		{
+			//defProfFile.delete();
+			properties = new Properties();
+		}
+		else{
+			read();
+		}
+		propFile_o = new FileOutputStream(defProfFile);
+		properties.setProperty("Profile", profileName);
+		properties.storeToXML(propFile_o, "LatiPics Default Profile", "UTF-8");
+	}
 //	
 	
 //	public static void setMinMaxTimes(String picTimeMin, String picTimeMax) throws IOException {
@@ -120,15 +135,15 @@ public class UserProfile {
 //	}
 	
 	
-//	public static String getDefault() throws IOException {
-//		file_path = ROOT_PATH + "defaultProfile.xml";
-//		try {
-//			read();
-//		} catch (InvalidPropertiesFormatException e) {
-//			ConsoleFile.write("WARNING", "Created new DefaultProfile.xml");
-//			System.out.println("Created new DefaultProfile.xml");
-//			setDefault(listProfiles().get(0));
-//		}
-//		return properties.getProperty("Profile");
-//	}
+	public static String getDefault() throws IOException {
+		file_path = ROOT_PATH + "defaultProfile.xml";
+		try {
+			read();
+		} catch (InvalidPropertiesFormatException e) {
+			ConsoleFile.write("WARNING", "Created new DefaultProfile.xml");
+			System.out.println("Created new DefaultProfile.xml");
+			setDefault(listProfiles().get(0));
+		}
+		return properties.getProperty("Profile");
+	}
 }
