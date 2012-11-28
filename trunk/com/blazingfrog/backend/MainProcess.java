@@ -400,6 +400,7 @@ public class MainProcess implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }        
+        FileUtils.deleteQuietly(dst);
     }
     
     public int getNbPicsProcessed(){
